@@ -1,0 +1,12 @@
+.git
+.gitignore
+.npmignore
+.editorconfig
+
+node_modules/
+src/
+test/
+
+tsconfig.json
+
+*.tgz

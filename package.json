@@ -1,0 +1,53 @@
+{
+  "name": "@asushares/core",
+  "version": "0.1.0",
+  "description": "ASU SHARES common class and CLI utility library.",
+  "main": "./build/src/index.js",
+  "types": "./build/src/index.d.ts",
+  "bin": {
+    "asushares": "build/bin/asushares.js"
+  },
+  "scripts": {
+    "clean": "rm -rf ./build",
+    "compile": "npx tsc && chmod +x ./build/bin/*",
+    "copy-files": "mkdir -p build/assets && cp -R src/assets/ build/assets/",
+    "build": "npm run clean && npm run compile && npm run copy-files",
+    "package": "npm run build && npm pack",
+    "test": "jest",
+    "test-watch": "nodemon --watch '{src,test}/**' --ext 'ts,md,json' --exec 'npx jest'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asushares/core.git"
+  },
+  "keywords": [
+    "asushares",
+    "hl7",
+    "fhir",
+    "cds-hooks",
+    "smart",
+    "cql",
+    "typescript",
+    "node"
+  ],
+  "author": "Preston Lee",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/asushares/core/issues"
+  },
+  "homepage": "https://github.com/asushares/core#readme",
+  "dependencies": {
+    "commander": "^12.0.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.16",
+    "nodemon": "^3.0.3",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "@types/fhir": "^0.0.41",
+    "@types/uuid": "^9.0.8"
+  }
+}
