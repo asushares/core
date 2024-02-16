@@ -1,6 +1,6 @@
 {
   "name": "@asushares/core",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "ASU SHARES common class and CLI utility library.",
   "main": "./build/src/index.js",
   "types": "./build/src/index.d.ts",
@@ -31,7 +31,7 @@
     "node"
   ],
   "author": "Preston Lee",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/asushares/core/issues"
   },
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.16",
+    "@types/node": "^20.11.19",
     "nodemon": "^3.0.3",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
