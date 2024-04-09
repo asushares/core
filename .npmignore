@@ -4,9 +4,10 @@
 .editorconfig
 
 node_modules/
-src/
-test/
+/src
+/test
 
-tsconfig.json
+/jest.config.js
+/tsconfig.json
 
 *.tgz

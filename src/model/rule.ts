@@ -27,7 +27,7 @@ export class Rule {
         b.display = '42 CFR Part2';
         return b;
     }
-    
+
     static labelFromTemplate(): Coding {
         const c = new Coding();
         c.system = 'http://terminology.hl7.org/CodeSystem/v3-ActCode';
@@ -40,6 +40,11 @@ export class Rule {
         const cs = new CodeSet();
         cs.groupID = 'Group-' + uuid.v4()
         return cs;
+    }
+
+
+    allCodeObjects() {
+        return this.codeSets.map(cs => { return cs.codes }).flat();
     }
 
 }

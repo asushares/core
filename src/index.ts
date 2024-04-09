@@ -13,6 +13,7 @@ export * from "./model/code_set_coding";
 export * from "./model/coding";
 export * from "./model/consent_extension";
 export * from "./model/permissions";
+export * from "./model/patient_consent_hook_request";
 export * from "./model/rule";
 export * from "./model/rules_file";
 
