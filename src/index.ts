@@ -2,6 +2,10 @@
 
 
 export * from './core/uuid_identifier';
+export * from './core/consent_category_settings';
+export * from './core/consent_template';
+export * from './core/information_category_setting';
+export * from './core/information_purpose_setting';
 
 export * from "./model/cards/card";
 export * from "./model/cards/deny_card";
