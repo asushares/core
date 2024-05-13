@@ -1,10 +1,11 @@
 // Author: Preston Lee
 
 import { Bundle, FhirResource } from "fhir/r5"
+import { ConsentDecision } from "./consent_decision";
 
 export class ConsentExtension {
 
-    decision: 'CONSENT_PERMIT' | 'CONSENT_DENY' | 'NO_CONSENT' = 'NO_CONSENT';
+    decision: ConsentDecision = ConsentDecision.NO_CONSENT;
     obligations: { id: { system: string, code: string }, parameters: { codes: Array<{ system: string, code: string }> } }[] = [];
     content: Bundle<FhirResource> | null = null;
     basedOn: string = '';

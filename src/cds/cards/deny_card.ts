@@ -1,9 +1,10 @@
 // Author: Preston Lee
 
 import { Card } from "./card"
+import { ConsentDecision } from "../../model/consent_decision";
 
 export class DenyCard extends Card {
-    summary: 'CONSENT_PERMIT' | 'CONSENT_DENY' | 'NO_CONSENT' = 'CONSENT_DENY';
+    summary: ConsentDecision = ConsentDecision.CONSENT_DENY;
     detail = "There is a consent denying this action.";
     indicator = "warning";
 

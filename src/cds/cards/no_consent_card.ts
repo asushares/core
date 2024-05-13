@@ -1,10 +1,11 @@
 // Author: Preston Lee
 
 import { Card } from "./card"
+import { ConsentDecision } from "../../model/consent_decision";
 
 export class NoConsentCard extends Card {
 
-    summary: 'CONSENT_PERMIT' | 'CONSENT_DENY' | 'NO_CONSENT' = 'NO_CONSENT';
+    summary: ConsentDecision = ConsentDecision.NO_CONSENT;
     detail = "No applicable consent was found.";
     indicator = "warning";
 
