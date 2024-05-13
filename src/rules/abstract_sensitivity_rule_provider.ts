@@ -1,8 +1,8 @@
 // Author: Preston Lee
 
-import * as fs from 'fs';
-import path from 'path';
+
 import Ajv from 'ajv';
+import path from "path";
 
 import { Coding } from "fhir/r5";
 
@@ -11,29 +11,29 @@ import { RulesFile } from '../model/rules_file';
 
 export abstract class AbstractSensitivityRuleProvider {
 
+    static SENSITIVITY_RULES_JSON_SCHEMA_FILE = path.join(path.dirname(__filename), '..', 'assets', 'schemas', 'sensitivity-rules.schema.json');
+    static SENSITIVITY_RULES_JSON_FILE_DEFAULT = path.join(path.dirname(__filename), '..', 'assets', 'sensitivity-rules.default.json');
+
     static REDACTION_OBLIGATION = {
         system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
         code: "REDACT"
     }
 
-    static DEFAULT_CONFIDENENCE_THESHOLD = 1.0;
+    // static DEFAULT_CONFIDENENCE_THESHOLD = 1.0;
+    // threshold = AbstractSensitivityRuleProvider.DEFAULT_CONFIDENENCE_THESHOLD;
 
-    static SENSITIVITY_RULES_JSON_SCHEMA_FILE = path.join(path.dirname(__filename), '..', 'schemas', 'sensitivity-rules.schema.json');
-    static SENSITIVITY_RULES_JSON_FILE = path.join(path.dirname(__filename), '..', 'data', 'sensitivity-rules.json');
+    rulesFileJSON: RulesFile = this.loadRulesFile();
+    rules: Rule[] = this.initializeRules();
 
-    static RULES_FILE: RulesFile = AbstractSensitivityRuleProvider.initializeRulesFile();
-    static SENSITIVITY_RULES: Rule[] = AbstractSensitivityRuleProvider.initializeRules();
+    AJV = new Ajv();
+    validator = this.AJV.compile(this.rulesSchema());
 
-    static AJV = new Ajv();
-    static VALIDATOR = AbstractSensitivityRuleProvider.AJV.compile(JSON.parse(fs.readFileSync(AbstractSensitivityRuleProvider.SENSITIVITY_RULES_JSON_SCHEMA_FILE).toString()));
+    abstract rulesSchema(): any;
 
+    abstract loadRulesFile(): RulesFile;
 
-    static initializeRulesFile() {
-        return JSON.parse(fs.readFileSync(AbstractSensitivityRuleProvider.SENSITIVITY_RULES_JSON_FILE).toString());
-    }
-
-    static initializeRules(): Rule[] {
-        const rules: Rule[] = this.RULES_FILE.rules.map((n: any) => { return Object.assign(new Rule, n) });
+    initializeRules(): Rule[] {
+        const rules: Rule[] = this.rulesFileJSON.rules.map((n: any) => { return Object.assign(new Rule, n) });
         console.log('Loaded rules:');
         rules.forEach(r => {
             console.log(`\t${r.id} : (${r.allCodeObjects().length} total codes, Basis: ${r.basis.display}, Labels: ${r.labels.map(l => { return l.code + ' - ' + l.display }).join(', ')})`);
@@ -41,28 +41,54 @@ export abstract class AbstractSensitivityRuleProvider {
         return rules;
     }
 
-    static reinitialize() {
-        AbstractSensitivityRuleProvider.initializeRulesFile();
-        AbstractSensitivityRuleProvider.initializeRules();
+    reinitialize() {
+        this.loadRulesFile();
+        this.initializeRules();
     }
 
-    static updateFileOnDisk(data: string) {
-        fs.writeFileSync(this.SENSITIVITY_RULES_JSON_FILE, JSON.stringify(data, null, "\t"));
-        AbstractSensitivityRuleProvider.reinitialize();
-    }
 
-    abstract applicableRulesForAll(codings: Coding[]): Rule[];
-    abstract applicableRulesFor(codings: Coding[], allRules: Rule[]): Rule[];
-
-    static validateRuleFile(data: string) {
+    validateRuleFile(data: string) {
         const ajv = new Ajv();
-        if (AbstractSensitivityRuleProvider.VALIDATOR(data)) {
+        if (this.validator(data)) {
             return null;
         } else {
-            return AbstractSensitivityRuleProvider.VALIDATOR.errors;
+            return this.validator.errors;
         }
     }
 
 
+    applicableRulesFor(codings: Coding[], allRules: Rule[], threshold: number): Rule[] {
+        // let codeList = codings.map(c => { return c.code; });
+        let rules = allRules.filter(rule => {
+            // console.log('Considering rule: ' + rule.id);
+            // return rule.allExpendedCodes().some(coding => {
+            return rule.allCodeObjects().some(coding => {
+                // console.log("\tRule coding: " + coding.system + ' ' + coding.code);
+                let found = false;
+                for (let i = 0; i < codings.length; i++) {
+                    // console.log(coding);
+                    if (coding.system == codings[i].system && coding.code == codings[i].code) {
+                        if (coding.confidence >= threshold) {
+                            found = true;
+                            console.log("Rule sensitivity match on: " + coding.system + ' ' + coding.code);
+                            break;
+                        } else {
+                            console.log(`Rule sensitivity match SKIPPED due to low confidence (confidence ${coding.confidence} < configured threshold ${threshold}) for: ` + coding.system + ' ' + coding.code);
+                        }
+                    }
+                }
+                return found;
+            })
+        })
+        console.log('Applicable rules (' + rules.length + '): ');
+        rules.forEach(r => {
+            console.log("\tRule ID: " + r.id);
+        });
+        return rules;
+    }
+
+    applicableRulesForAll(codings: Coding[], threshold: number): Rule[] {
+        return this.applicableRulesFor(codings, this.rules, threshold);
+    }
 
 }

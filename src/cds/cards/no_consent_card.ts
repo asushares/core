@@ -8,5 +8,10 @@ export class NoConsentCard extends Card {
     summary: ConsentDecision = ConsentDecision.NO_CONSENT;
     detail = "No applicable consent was found.";
     indicator = "warning";
+    
+    constructor() {
+        super();
+        this.extension.decision =  ConsentDecision.NO_CONSENT;
+    }
 
-};
+}

@@ -1,0 +1,40 @@
+// Author: Preston Lee
+
+import path from 'path';
+import Ajv from 'ajv';
+
+export abstract class AbstractDataSharingCDSHookValidator {
+
+    static REQUEST_SCHEMA_FILE = path.join(path.dirname(__filename), '..', 'assets', 'schemas', 'patient-consent-consult-hook-request.schema.json');
+    static RESPONSE_SCHEMA_FILE = path.join(path.dirname(__filename), '..', 'assets', 'schemas', 'patient-consent-consult-hook-response.schema.json');
+
+    static AJV = new Ajv();
+    
+    requestValidator = AbstractDataSharingCDSHookValidator.AJV.compile(this.requestSchema());
+    responseValidator = AbstractDataSharingCDSHookValidator.AJV.compile(this.responseSchema());
+
+    constructor() {
+        // console.log(AbstractCDSHookValidator.RESPONSE_SCHEMA_FILE);
+    }
+
+    // FIXME Race condition here! Needs a mutex or similar.
+    validateRequest(data: string) {
+        if (this.requestValidator(data)) {
+            return null;
+        } else {
+            return this.requestValidator.errors;
+        }
+    }
+
+    validateResponse(data: string) {
+        if (this.responseValidator(data)) {
+            return null;
+        } else {
+            return this.responseValidator.errors;
+        }
+    }
+
+    abstract requestSchema(): any;
+    abstract responseSchema(): any;
+
+}

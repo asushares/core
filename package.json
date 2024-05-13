@@ -1,16 +1,16 @@
 {
   "name": "@asushares/core",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "description": "ASU SHARES common class and CLI utility library.",
   "main": "./build/src/index.js",
   "types": "./build/src/index.d.ts",
   "bin": {
-    "asushares": "build/bin/asushares.js"
+    "asushares": "build/src/bin/asushares.js"
   },
   "scripts": {
     "clean": "rm -rf ./build",
-    "compile": "npx tsc && chmod +x ./build/bin/*",
-    "copy-files": "mkdir -p build/assets && cp -R src/assets/ build/assets/",
+    "compile": "npx tsc && chmod +x ./build/src/bin/*",
+    "copy-files": "mkdir -p build/assets && cp -R src/assets/ build/src/assets/",
     "build": "npm run clean && npm run compile && npm run copy-files",
     "package": "npm run build && npm pack",
     "test": "jest",
@@ -38,8 +38,8 @@
   "homepage": "https://github.com/asushares/core#readme",
   "dependencies": {
     "uuid": "^9.0.1",
-    "ajv": "^8.12.0",
-    "jsonpath-plus": "^8.1.0"
+    "ajv": "^8.13.0",
+    "jsonpath-plus": "^9.0.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",

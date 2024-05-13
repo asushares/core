@@ -10,9 +10,8 @@ export class PermitCard extends Card {
 
     constructor() {
         super();
-        if (this.extension) {
-            this.extension.decision = this.summary;
-        }
+        this.extension.decision =  ConsentDecision.CONSENT_PERMIT;
     }
-    
+
+
 };
