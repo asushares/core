@@ -2,7 +2,6 @@
 
 
 import Ajv from 'ajv';
-import path from "path";
 
 import { Coding } from "fhir/r5";
 
@@ -10,9 +9,6 @@ import { Rule } from '../model/rule';
 import { RulesFile } from '../model/rules_file';
 
 export abstract class AbstractSensitivityRuleProvider {
-
-    static SENSITIVITY_RULES_JSON_SCHEMA_FILE = path.join(path.dirname(__filename), '..', 'assets', 'schemas', 'sensitivity-rules.schema.json');
-    static SENSITIVITY_RULES_JSON_FILE_DEFAULT = path.join(path.dirname(__filename), '..', 'assets', 'sensitivity-rules.default.json');
 
     static REDACTION_OBLIGATION = {
         system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
@@ -22,28 +18,35 @@ export abstract class AbstractSensitivityRuleProvider {
     // static DEFAULT_CONFIDENENCE_THESHOLD = 1.0;
     // threshold = AbstractSensitivityRuleProvider.DEFAULT_CONFIDENENCE_THESHOLD;
 
-    rulesFileJSON: RulesFile = this.loadRulesFile();
-    rules: Rule[] = this.initializeRules();
+    rulesFileJSON: RulesFile = new RulesFile();// = this.loadRulesFile();
+    rules: Rule[] = []; // = this.initializeRules();
 
     AJV = new Ajv();
     validator = this.AJV.compile(this.rulesSchema());
+
+    // constructor() {
+    //     this.reinitialize();
+    // }
+
 
     abstract rulesSchema(): any;
 
     abstract loadRulesFile(): RulesFile;
 
-    initializeRules(): Rule[] {
-        const rules: Rule[] = this.rulesFileJSON.rules.map((n: any) => { return Object.assign(new Rule, n) });
-        console.log('Loaded rules:');
-        rules.forEach(r => {
-            console.log(`\t${r.id} : (${r.allCodeObjects().length} total codes, Basis: ${r.basis.display}, Labels: ${r.labels.map(l => { return l.code + ' - ' + l.display }).join(', ')})`);
-        });
-        return rules;
-    }
 
     reinitialize() {
-        this.loadRulesFile();
-        this.initializeRules();
+        this.rulesFileJSON = this.loadRulesFile();
+        // this.reinitializeRules();
+        // }
+
+        // reinitializeRules(): Rule[] {
+        // const rules: Rule[] = this.rulesFileJSON.rules.map((n: any) => { return Object.assign(new Rule, n) });
+        this.rules = this.rulesFileJSON.rules.map((n: any) => { return Object.assign(new Rule, n) });
+        console.log('Loaded rules:');
+        this.rules.forEach(r => {
+            console.log(`\t${r.id} : (${r.allCodeObjects().length} total codes, Basis: ${r.basis.display}, Labels: ${r.labels.map(l => { return l.code + ' - ' + l.display }).join(', ')})`);
+        });
+        // return rules;
     }
 
 

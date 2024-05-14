@@ -13,7 +13,7 @@ import { PermitCard } from "../cds/cards/permit_card";
 
 export abstract class AbstractDataSharingEngine {
 
-    constructor(public threshold: number, public redaction_enabled: boolean) {
+    constructor(public ruleProvider: AbstractSensitivityRuleProvider, public threshold: number, public redaction_enabled: boolean) {
     }
 
 
@@ -77,11 +77,6 @@ export abstract class AbstractDataSharingEngine {
 
     abstract createAuditEvent(consents: Consent[], engineContext: DataSharingEngineContext, outcodeCode: Coding): void;
 
-    abstract ruleProvider(): AbstractSensitivityRuleProvider;
-    // ruleProvider(): AbstractSensitivityRuleProvider {
-    //     return new FileSystemCodeMatchingThresholdSensitivityRuleProvider(this.threshold);
-    // };
-
     addSecurityLabels(consents: Consent[], engineContext: DataSharingEngineContext, consentExtension: ConsentExtension) {
         if (engineContext.content?.entry) { // If the request contains FHIR resources
             // Find all Coding elements anywhere within the tree. It doesn't matter where.
@@ -91,7 +86,7 @@ export abstract class AbstractDataSharingEngine {
                     if (e.resource) {
                         // TODO This is a pretty naiive implementation, as it only looks for coded elements recursively without awareness of the context.
                         let codings = JSONPath({ path: "$..coding", json: e.resource }).flat();
-                        let srp = this.ruleProvider();
+                        let srp = this.ruleProvider;
                         let srp_rules = srp.applicableRulesForAll(codings, this.threshold);
                         // rp.applySecurityLabelsToResource(rules, )
                         if (!e.resource.meta) {

@@ -1,12 +1,8 @@
 // Author: Preston Lee
 
-import path from 'path';
 import Ajv from 'ajv';
 
 export abstract class AbstractDataSharingCDSHookValidator {
-
-    static REQUEST_SCHEMA_FILE = path.join(path.dirname(__filename), '..', 'assets', 'schemas', 'patient-consent-consult-hook-request.schema.json');
-    static RESPONSE_SCHEMA_FILE = path.join(path.dirname(__filename), '..', 'assets', 'schemas', 'patient-consent-consult-hook-response.schema.json');
 
     static AJV = new Ajv();
     
