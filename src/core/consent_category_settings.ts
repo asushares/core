@@ -127,7 +127,7 @@ export class ConsentCategorySettings {
         }
     }
 
-    loadFromConsentProvision(provision: ConsentProvision) {
+    loadCategoriesFromConsentProvision(provision: ConsentProvision) {
         if (!provision.securityLabel) {
             provision.securityLabel = [];
         }
@@ -135,6 +135,9 @@ export class ConsentCategorySettings {
             c.enabled = false;
         });
         this.applyCategoryCodings(provision.securityLabel);
+    }
+
+    loadPurposesFromConsentProvision(provision: ConsentProvision) {
         if (!provision.purpose) {
             provision.purpose = [];
         }
@@ -142,6 +145,11 @@ export class ConsentCategorySettings {
             c.enabled = false;
         });
         this.applyPurposeCodings(provision.purpose);
+    }
+
+    loadAllFromConsentProvision(provision: ConsentProvision) {
+        this.loadCategoriesFromConsentProvision(provision);
+        this.loadPurposesFromConsentProvision(provision);
     }
 
     updateConsentProvision(provision: ConsentProvision) {
