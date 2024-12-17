@@ -25,7 +25,7 @@ export abstract class AbstractSensitivityRuleProvider {
     validator = this.AJV.compile(this.rulesSchema());
 
     constructor() {
-        this.reinitialize();
+        // this.reinitialize();
     }
 
 
