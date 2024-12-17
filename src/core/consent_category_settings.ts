@@ -7,22 +7,40 @@ import { InformationPurposeSetting } from "./information_purpose_setting";
 export class ConsentCategorySettings {
 
     // SHARES information categories
-    substanceUse: InformationCategorySetting = new InformationCategorySetting('SUD', 'Records possibly pertaining to commonly abused stantances.');
-    mentalHealth: InformationCategorySetting = new InformationCategorySetting('MENCAT', 'All manner of mental health and wellbeing information.');
-    demographics: InformationCategorySetting = new InformationCategorySetting('DEMO', 'General ethnic, social, and environmental background.');
-    diagnoses: InformationCategorySetting = new InformationCategorySetting('DIA', 'Medically recognized conditions you have experienced.');
-    disabilities: InformationCategorySetting = new InformationCategorySetting('DIS', 'Physical or mental conditions limiting movement, sense, or activity.');
-    genetics: InformationCategorySetting = new InformationCategorySetting('GDIS', 'Genomic and molecular data that may indicate, for example, susceptability to heritable disease');
-    infectiousDiseases: InformationCategorySetting = new InformationCategorySetting('DISEASE', 'Past or present transmissible ailments.');
-    medications: InformationCategorySetting = new InformationCategorySetting('DRGIS', 'Drugs prescribed to you.');
-    sexualAndReproductive: InformationCategorySetting = new InformationCategorySetting('SEX', 'Information related to sexuality and reproductive health.');
-    socialDeterminants: InformationCategorySetting = new InformationCategorySetting('SOCIAL', 'Environmental and contextual factors that may impact your health.');
-    violence: InformationCategorySetting = new InformationCategorySetting('VIO', 'Indicators of possible physical or mental harm by violence.');
+    substanceUse: InformationCategorySetting = new InformationCategorySetting('SUD', 'Substance Use', 'Records possibly pertaining to commonly abused stantances.');
+    mentalHealth: InformationCategorySetting = new InformationCategorySetting('MENCAT', 'Mental Health', 'All manner of mental health and wellbeing information.');
+    demographics: InformationCategorySetting = new InformationCategorySetting('DEMO', 'Demographics', 'General ethnic, social, and environmental background.');
+    diagnoses: InformationCategorySetting = new InformationCategorySetting('DIA', 'Diagnoses', 'Medically recognized conditions you have experienced.');
+    disabilities: InformationCategorySetting = new InformationCategorySetting('DIS', 'Disabilities', 'Physical or mental conditions limiting movement, sense, or activity.');
+    genetics: InformationCategorySetting = new InformationCategorySetting('GDIS', 'Genetics', 'Genomic and molecular data that may indicate, for example, susceptability to heritable disease');
+    infectiousDiseases: InformationCategorySetting = new InformationCategorySetting('DISEASE', 'Infectious Diseases', 'Past or present transmissible ailments.');
+    medications: InformationCategorySetting = new InformationCategorySetting('DRGIS', 'Medications', 'Drugs prescribed to you.');
+    sexualAndReproductive: InformationCategorySetting = new InformationCategorySetting('SEX', 'Sexual & Reproductive Health', 'Information related to sexuality and reproductive health.');
+    socialDeterminants: InformationCategorySetting = new InformationCategorySetting('SOCIAL', 'Social Determinents of Health', 'Environmental and contextual factors that may impact your health.');
+    violence: InformationCategorySetting = new InformationCategorySetting('VIO', 'Violence', 'Indicators of possible physical or mental harm by violence.');
 
     // SHARES information sharing purposes
-    treatment: InformationCategorySetting = new InformationCategorySetting('HIPAAConsentCD', 'For the purposes of providing or supporing care.');
-    research: InformationCategorySetting = new InformationCategorySetting('RESEARCH', 'Scientific and academic research intended to benefit others.');
+    treatment: InformationCategorySetting = new InformationCategorySetting('HIPAAConsentCD', 'Treatment', 'For the purposes of providing or supporing care.');
+    research: InformationCategorySetting = new InformationCategorySetting('RESEARCH', 'Research', 'Scientific and academic research intended to benefit others.');
 
+    categoryForCode(code: string): InformationCategorySetting | null {
+        let cat = null;
+        this.allCategories().forEach(c => {
+            if (c.act_code == code) {
+                cat = c;
+            }
+        });
+        return cat;
+    }
+
+    // nameForCode(code: string): string {
+    //     let cat = this.categoryForCode(code);
+    //     if (cat) {
+    //         return cat.name;
+    //     } else {
+    //         return '';
+    //     }
+    // }
 
     allCategories(): InformationCategorySetting[] {
         return [
