@@ -2,7 +2,7 @@
 
 import { JSONPath } from "jsonpath-plus";
 
-import { Coding, Consent, ConsentProvision } from "fhir/r5";
+import { Coding, Consent, ConsentProvision, FhirResource } from "fhir/r5";
 import { ConsentExtension } from "../model/consent_extension";
 import { AbstractSensitivityRuleProvider } from "../rules/abstract_sensitivity_rule_provider";
 import { DataSharingEngineContext } from "../model/engine_context";
@@ -115,25 +115,32 @@ export abstract class AbstractDataSharingEngine {
     }
 
     // redactFromLabels(card: Card) {
+    shouldRedactFromLabels(consentExtension: ConsentExtension, resource: FhirResource) {
+        let shouldRedact = false;
+        if (resource?.meta?.security) {
+            consentExtension.obligations.forEach(o => {
+                if (o.id.code == AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.code && o.id.system == AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.system) {
+                    o.parameters.codes.forEach(code => {
+                        resource!.meta!.security!.findIndex((c, i, all) => {
+                            if (code.code == c.code && code.system == c.system) {
+                                shouldRedact = true;
+                            }
+                        });
+
+                    });
+                }
+            });
+            return !shouldRedact;
+        }
+    }
+    
     redactFromLabels(consentExtension: ConsentExtension) {
         if (consentExtension.content?.entry) {
             consentExtension.content.entry = consentExtension.content?.entry.filter(e => {
-                let shouldRedact = false;
-                if (e.resource?.meta?.security) {
-                    consentExtension.obligations.forEach(o => {
-                        if (o.id.code == AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.code && o.id.system == AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.system) {
-                            o.parameters.codes.forEach(code => {
-                                e.resource!.meta!.security!.findIndex((c, i, all) => {
-                                    if (code.code == c.code && code.system == c.system) {
-                                        shouldRedact = true;
-                                    }
-                                });
-
-                            });
-                        }
-                    });
-                    return !shouldRedact;
+                if(e.resource){
+                    return !this.shouldRedactFromLabels(consentExtension, e!.resource);
                 }
+                return true;
             })
         }
     }

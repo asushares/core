@@ -9,8 +9,8 @@ export abstract class Card {
     abstract detail: string;
     abstract indicator: string;
     source: { label: string, url: string } = {
-        label: process.env.ORG_NAME!,
-        url: process.env.ORG_URL!
+        label: '',
+        url: ''
     };
     public extension: ConsentExtension = new ConsentExtension(null);
 

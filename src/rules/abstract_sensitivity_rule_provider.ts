@@ -15,14 +15,11 @@ export abstract class AbstractSensitivityRuleProvider {
         code: "REDACT"
     }
 
-    // static DEFAULT_CONFIDENENCE_THESHOLD = 1.0;
-    // threshold = AbstractSensitivityRuleProvider.DEFAULT_CONFIDENENCE_THESHOLD;
-
     rulesFileJSON: RulesFile = new RulesFile();// = this.loadRulesFile();
     rules: Rule[] = []; // = this.initializeRules();
 
     AJV = new Ajv();
-    validator = this.AJV.compile(this.rulesSchema());
+    validator = this.rulesSchema() ? this.AJV.compile(this.rulesSchema()) : null;
 
     constructor() {
         // this.reinitialize();
@@ -46,7 +43,11 @@ export abstract class AbstractSensitivityRuleProvider {
 
     validateRuleFile(data: string) {
         const ajv = new Ajv();
-        if (this.validator(data)) {
+        if (!this.validator) {
+            console.log('No validator found. All validations will pass without errors.');            
+            return null;
+        }
+        else if (this.validator(data)) {
             return null;
         } else {
             return this.validator.errors;
