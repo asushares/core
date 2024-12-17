@@ -24,9 +24,9 @@ export abstract class AbstractSensitivityRuleProvider {
     AJV = new Ajv();
     validator = this.AJV.compile(this.rulesSchema());
 
-    // constructor() {
-    //     this.reinitialize();
-    // }
+    constructor() {
+        this.reinitialize();
+    }
 
 
     abstract rulesSchema(): any;
@@ -36,17 +36,11 @@ export abstract class AbstractSensitivityRuleProvider {
 
     reinitialize() {
         this.rulesFileJSON = this.loadRulesFile();
-        // this.reinitializeRules();
-        // }
-
-        // reinitializeRules(): Rule[] {
-        // const rules: Rule[] = this.rulesFileJSON.rules.map((n: any) => { return Object.assign(new Rule, n) });
         this.rules = this.rulesFileJSON.rules.map((n: any) => { return Object.assign(new Rule, n) });
         console.log('Loaded rules:');
         this.rules.forEach(r => {
             console.log(`\t${r.id} : (${r.allCodeObjects().length} total codes, Basis: ${r.basis.display}, Labels: ${r.labels.map(l => { return l.code + ' - ' + l.display }).join(', ')})`);
         });
-        // return rules;
     }
 
 
