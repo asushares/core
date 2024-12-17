@@ -80,7 +80,7 @@ export abstract class AbstractDataSharingEngine {
     addSecurityLabels(consents: Consent[], engineContext: DataSharingEngineContext, consentExtension: ConsentExtension) {
         if (engineContext.content?.entry) { // If the request contains FHIR resources
             // Find all Coding elements anywhere within the tree. It doesn't matter where.
-            consentExtension = new ConsentExtension(engineContext.content);
+            // consentExtension = new ConsentExtension(engineContext.content);
             if (consentExtension.content?.entry) {
                 consentExtension.content.entry.forEach(e => {
                     if (e.resource) {
@@ -101,7 +101,7 @@ export abstract class AbstractDataSharingEngine {
                             let ob = { id: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION, parameters: { codes: r.labels } }
                             // r.labels.map(l => l.);
                             consentExtension.obligations.push(ob);
-                            console.log('Adding label to resource meta security:');
+                            console.log(`Adding label to meta security for resource: ${e.resource?.resourceType}/${r.id}`);
                             console.log(r.labels);
                             r.labels.forEach(l => {
                                 e.resource?.meta?.security?.push(l);
