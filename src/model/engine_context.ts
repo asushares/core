@@ -4,6 +4,10 @@ import { Bundle } from "fhir/r5";
 import { SystemValue, SystemCode } from "../cds/data_sharing_cds_hook_request";
 
 export class DataSharingEngineContext {
+
+    public static HEADER_CDS_REDACTION_ENABLED = 'CDS-Redaction-Enabled';
+    public static HEADER_CDS_CONFIDENCE_THRESHOLD = 'CDS-Confidence-Threshold';
+
     /**
      * identifiers of the actor
      */
@@ -27,16 +31,5 @@ export class DataSharingEngineContext {
     /**
      * content being requested
      */
-    // content?: {
-    //     entry: {
-    //         resource: {
-    //             resourceType: string;
-    //             [k: string]: unknown;
-    //         };
-    //         [k: string]: unknown;
-    //     }[];
-    //     resourceType: string;
-    //     [k: string]: unknown;
-    // };
     content?: Bundle;
 } 
