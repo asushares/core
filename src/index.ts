@@ -16,6 +16,7 @@ export * from "./cds/cards/permit_card";
 export * from "./cds/cards/permit_card";
 
 export * from "./engine/abstract_data_sharing_engine";
+export * from "./engine/console_data_sharing_engine";
 
 export * from "./model/code_set";
 export * from "./model/code_set_coding";
@@ -28,6 +29,7 @@ export * from "./model/rule";
 export * from "./model/rules_file";
 
 export * from "./rules/abstract_sensitivity_rule_provider";
+export * from "./rules/dummy_rule_provider";
 
 export * from "./ui/toast_event";
 export * from "./ui/toast_event_types";
