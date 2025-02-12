@@ -10,7 +10,7 @@ import { Card } from "../cds/cards/card";
 import { DenyCard } from "../cds/cards/deny_card";
 import { NoConsentCard } from "../cds/cards/no_consent_card";
 import { PermitCard } from "../cds/cards/permit_card";
-import { ConsentCategorySettings, ConsentDecision, InformationCategorySetting, SimulatorInput } from "..";
+import { ConsentCategorySettings, ConsentDecision, InformationCategorySetting } from "..";
 
 export abstract class AbstractDataSharingEngine {
 
@@ -252,23 +252,21 @@ export abstract class AbstractDataSharingEngine {
     }
 
 
-    computeConsentDecisionsForResources(labeledResources: FhirResource[], input: SimulatorInput): { [key: string]: Card } {
+    computeConsentDecisionsForResources(labeledResources: FhirResource[], consent: Consent, categorySettings: ConsentCategorySettings): { [key: string]: Card } {
         let consentDecisions: { [key: string]: Card } = {};
         let shouldShare = false;
-        if (input.consent?.provision) {
-            if (input.consent.decision === undefined) {
-                // Making a root denial by default, for purposes of simulation.
-                input.consent.decision = 'deny';
+        if (consent?.provision) {
+            if (consent.decision === undefined) {
+                // Making a root denial by default, if undefined, as a reasonable default is necessary.
+                consent.decision = 'deny';
             }
-            // const ruleProvider = new DummyRuleProvider();
-            // const engine = new ConsoleDataSharingEngine(ruleProvider, 0.0, false);
             const tmpCategorySettings = new ConsentCategorySettings();
 
-            input.consent.provision.forEach((p) => {
+            consent.provision.forEach((p) => {
                 tmpCategorySettings.loadAllFromConsentProvision(p);
                 labeledResources.forEach((r) => {
                     let extension = new ConsentExtension(null);
-                    let includeEnabled = input.consent?.decision == 'permit';
+                    let includeEnabled = consent?.decision == 'permit';
                     extension.obligations.push({
                         id: { system: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.system, code: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.code },
                         parameters: {
@@ -277,7 +275,7 @@ export abstract class AbstractDataSharingEngine {
                                 .map(c => { return { system: c.system, code: c.act_code } }) // Make it a valid Coding
                         }
                     })
-                    shouldShare = !this.shouldRedactFromLabels(extension, r) && this.shouldShareFromPurposes(r, p, input.categorySettings);
+                    shouldShare = !this.shouldRedactFromLabels(extension, r) && this.shouldShareFromPurposes(r, p, categorySettings);
                     // console.log('Decision:', r.resourceType, r.id, shouldShare);
                     if (shouldShare) {
                         consentDecisions[r.id!] = new PermitCard();
@@ -289,7 +287,7 @@ export abstract class AbstractDataSharingEngine {
 
         } else {
             labeledResources.forEach((r) => {
-                if (input.consent?.decision == 'deny') {
+                if (consent?.decision == 'deny') {
                     consentDecisions[r.id!] = new DenyCard();
                 } else {
                     consentDecisions[r.id!] = new PermitCard();
@@ -300,8 +298,8 @@ export abstract class AbstractDataSharingEngine {
     }
 
 
-    exportDecisionsForCsv(input: SimulatorInput, resources: FhirResource[], decisions: { [key: string]: Card }) {
-        let data = this.exportCsvData(input, resources, decisions);
+    exportDecisionsForCsv(categorySettings: ConsentCategorySettings, resources: FhirResource[], decisions: { [key: string]: Card }) {
+        let data = this.exportCsvData(categorySettings, resources, decisions);
         // let csvContent = 'data:text/csv;charset=utf-8,';
         let csvContent = '';
         data.forEach((row) => {
@@ -311,13 +309,13 @@ export abstract class AbstractDataSharingEngine {
         return csvContent;
     }
 
-    exportCsvData(input: SimulatorInput, labeledResources: FhirResource[], decisions: { [key: string]: Card; }) {
+    exportCsvData(categorySettings: ConsentCategorySettings, labeledResources: FhirResource[], decisions: { [key: string]: Card; }) {
         let data = [['Resource Type', 'Resource ID', 'Labels', 'Decision']];
         labeledResources.forEach((r) => {
             let labels: string[] = [];
             r.meta?.security?.forEach((s) => {
                 if (s.code) {
-                    let label = input.categorySettings.categoryForCode(s.code)?.name || (s.code + ' (Unknown)');
+                    let label = categorySettings.categoryForCode(s.code)?.name || (s.code + ' (Unknown)');
                     labels.push(label);
                 } else {
                     labels.push('(Unknown)');

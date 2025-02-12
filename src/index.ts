@@ -31,8 +31,5 @@ export * from "./model/rules_file";
 export * from "./rules/abstract_sensitivity_rule_provider";
 export * from "./rules/dummy_rule_provider";
 
-export * from "./simulator/abstract_simulator";
-export * from "./simulator/simulator_input";
-
 export * from "./ui/toast_event";
 export * from "./ui/toast_event_types";
