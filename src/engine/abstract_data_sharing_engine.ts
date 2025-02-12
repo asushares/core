@@ -252,7 +252,7 @@ export abstract class AbstractDataSharingEngine {
     }
 
 
-    computeConsentDecisionsForResources(labeledResources: FhirResource[], consent: Consent, categorySettings: ConsentCategorySettings): { [key: string]: Card } {
+    computeConsentDecisionsForResources(labeledResources: FhirResource[], consent: Consent, sharingContextSettings: ConsentCategorySettings): { [key: string]: Card } {
         let consentDecisions: { [key: string]: Card } = {};
         let shouldShare = false;
         if (consent?.provision) {
@@ -275,7 +275,7 @@ export abstract class AbstractDataSharingEngine {
                                 .map(c => { return { system: c.system, code: c.act_code } }) // Make it a valid Coding
                         }
                     })
-                    shouldShare = !this.shouldRedactFromLabels(extension, r) && this.shouldShareFromPurposes(r, p, categorySettings);
+                    shouldShare = !this.shouldRedactFromLabels(extension, r) && this.shouldShareFromPurposes(r, p, sharingContextSettings);
                     // console.log('Decision:', r.resourceType, r.id, shouldShare);
                     if (shouldShare) {
                         consentDecisions[r.id!] = new PermitCard();
