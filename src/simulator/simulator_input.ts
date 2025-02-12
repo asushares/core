@@ -1,7 +1,7 @@
 // Author: Preston Lee
 
-import { ConsentCategorySettings } from "@asushares/core";
 import { Bundle, Consent } from "fhir/r5";
+import { ConsentCategorySettings } from "../core/consent_category_settings";
 
 export class SimulatorInput {
 

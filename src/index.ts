@@ -32,7 +32,6 @@ export * from "./rules/abstract_sensitivity_rule_provider";
 export * from "./rules/dummy_rule_provider";
 
 export * from "./simulator/abstract_simulator";
-export * from "./simulator/headless_simulator_cds";
 export * from "./simulator/simulator_input";
 
 export * from "./ui/toast_event";

@@ -10,7 +10,7 @@ import { Card } from "../cds/cards/card";
 import { DenyCard } from "../cds/cards/deny_card";
 import { NoConsentCard } from "../cds/cards/no_consent_card";
 import { PermitCard } from "../cds/cards/permit_card";
-import { ConsentCategorySettings, InformationCategorySetting } from "..";
+import { ConsentCategorySettings, ConsentDecision, InformationCategorySetting, SimulatorInput } from "..";
 
 export abstract class AbstractDataSharingEngine {
 
@@ -72,7 +72,7 @@ export abstract class AbstractDataSharingEngine {
 
         // Create an AuditEvent with the results.
         let outcodeCode = { code: card.extension.decision, display: card.extension.decision };
-       this.createAuditEvent(consents, engineContext, outcodeCode);
+        this.createAuditEvent(consents, engineContext, outcodeCode);
         return card;
     }
 
@@ -135,16 +135,16 @@ export abstract class AbstractDataSharingEngine {
         }
     }
 
-    sharableForPurpose(p: ConsentProvision, c: InformationCategorySetting ): boolean {
+    sharableForPurpose(p: ConsentProvision, c: InformationCategorySetting): boolean {
         let sharable = false;
-        
-            if (p.purpose) {
-                p.purpose.forEach((purpose) => {
-                    if (c.system == purpose.system && c.act_code == purpose.code) {
-                        sharable = true;
-                    }
-                });
-            }
+
+        if (p.purpose) {
+            p.purpose.forEach((purpose) => {
+                if (c.system == purpose.system && c.act_code == purpose.code) {
+                    sharable = true;
+                }
+            });
+        }
         return sharable;
     }
 
@@ -161,11 +161,11 @@ export abstract class AbstractDataSharingEngine {
     }
 
     // shouldRedactFromPurposes(consentExtension: ConsentExtension, resource: FhirResource) {}
-    
+
     redactFromLabels(consentExtension: ConsentExtension) {
         if (consentExtension.content?.entry) {
             consentExtension.content.entry = consentExtension.content?.entry.filter(e => {
-                if(e.resource){
+                if (e.resource) {
                     return !this.shouldRedactFromLabels(consentExtension, e!.resource);
                 }
                 return true;
@@ -251,4 +251,95 @@ export abstract class AbstractDataSharingEngine {
         return decision;
     }
 
+
+    computeConsentDecisionsForResources(labeledResources: FhirResource[], input: SimulatorInput): { [key: string]: Card } {
+        let consentDecisions: { [key: string]: Card } = {};
+        let shouldShare = false;
+        if (input.consent?.provision) {
+            if (input.consent.decision === undefined) {
+                // Making a root denial by default, for purposes of simulation.
+                input.consent.decision = 'deny';
+            }
+            // const ruleProvider = new DummyRuleProvider();
+            // const engine = new ConsoleDataSharingEngine(ruleProvider, 0.0, false);
+            const tmpCategorySettings = new ConsentCategorySettings();
+
+            input.consent.provision.forEach((p) => {
+                tmpCategorySettings.loadAllFromConsentProvision(p);
+                labeledResources.forEach((r) => {
+                    let extension = new ConsentExtension(null);
+                    let includeEnabled = input.consent?.decision == 'permit';
+                    extension.obligations.push({
+                        id: { system: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.system, code: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.code },
+                        parameters: {
+                            codes: tmpCategorySettings.allCategories()
+                                .filter(c => includeEnabled ? !c.enabled : c.enabled) // Only categories relevant to the consent
+                                .map(c => { return { system: c.system, code: c.act_code } }) // Make it a valid Coding
+                        }
+                    })
+                    shouldShare = !this.shouldRedactFromLabels(extension, r) && this.shouldShareFromPurposes(r, p, input.categorySettings);
+                    // console.log('Decision:', r.resourceType, r.id, shouldShare);
+                    if (shouldShare) {
+                        consentDecisions[r.id!] = new PermitCard();
+                    } else {
+                        consentDecisions[r.id!] = new DenyCard();
+                    }
+                });
+            });
+
+        } else {
+            labeledResources.forEach((r) => {
+                if (input.consent?.decision == 'deny') {
+                    consentDecisions[r.id!] = new DenyCard();
+                } else {
+                    consentDecisions[r.id!] = new PermitCard();
+                }
+            });
+        }
+        return consentDecisions;
+    }
+
+
+    exportDecisionsForCsv(input: SimulatorInput, resources: FhirResource[], decisions: { [key: string]: Card }) {
+        let data = this.exportCsvData(input, resources, decisions);
+        // let csvContent = 'data:text/csv;charset=utf-8,';
+        let csvContent = '';
+        data.forEach((row) => {
+            let rowContent = row.join(',');
+            csvContent += rowContent + "\n";
+        });
+        return csvContent;
+    }
+
+    exportCsvData(input: SimulatorInput, labeledResources: FhirResource[], decisions: { [key: string]: Card; }) {
+        let data = [['Resource Type', 'Resource ID', 'Labels', 'Decision']];
+        labeledResources.forEach((r) => {
+            let labels: string[] = [];
+            r.meta?.security?.forEach((s) => {
+                if (s.code) {
+                    let label = input.categorySettings.categoryForCode(s.code)?.name || (s.code + ' (Unknown)');
+                    labels.push(label);
+                } else {
+                    labels.push('(Unknown)');
+                }
+            });
+            if (r.id && decisions[r.id]) {
+                let decision = 'Undecided';
+                switch (decisions[r.id].summary) {
+                    case ConsentDecision.CONSENT_PERMIT:
+                        decision = 'Permit';
+                        break;
+                    case ConsentDecision.CONSENT_DENY:
+                        decision = 'Deny';
+                    default:
+                        break;
+                }
+                data.push([r.resourceType,
+                r.id || 'unknown',
+                labels.join('|'),
+                    decision]);
+            }
+        });
+        return data;
+    }
 }
