@@ -10,6 +10,7 @@ import { Card } from "../cds/cards/card";
 import { DenyCard } from "../cds/cards/deny_card";
 import { NoConsentCard } from "../cds/cards/no_consent_card";
 import { PermitCard } from "../cds/cards/permit_card";
+import { ConsentCategorySettings, InformationCategorySetting } from "..";
 
 export abstract class AbstractDataSharingEngine {
 
@@ -133,6 +134,33 @@ export abstract class AbstractDataSharingEngine {
             return !shouldRedact;
         }
     }
+
+    sharableForPurpose(p: ConsentProvision, c: InformationCategorySetting ): boolean {
+        let sharable = false;
+        
+            if (p.purpose) {
+                p.purpose.forEach((purpose) => {
+                    if (c.system == purpose.system && c.act_code == purpose.code) {
+                        sharable = true;
+                    }
+                });
+            }
+        return sharable;
+    }
+
+    shouldShareFromPurposes(r: FhirResource, p: ConsentProvision, c: ConsentCategorySettings): boolean {
+        let sharable = false;
+        // const tmp = new ConsentCategorySettings()
+        if (c.treatment.enabled) {
+            sharable ||= this.sharableForPurpose(p, c.treatment);
+        }
+        if (c.research.enabled) {
+            sharable ||= this.sharableForPurpose(p, c.research);
+        }
+        return sharable;
+    }
+
+    // shouldRedactFromPurposes(consentExtension: ConsentExtension, resource: FhirResource) {}
     
     redactFromLabels(consentExtension: ConsentExtension) {
         if (consentExtension.content?.entry) {

@@ -2,7 +2,6 @@
 
 import { Coding, ConsentProvision } from "fhir/r5";
 import { InformationCategorySetting } from "./information_category_setting";
-import { InformationPurposeSetting } from "./information_purpose_setting";
 
 export class ConsentCategorySettings {
 
@@ -20,9 +19,16 @@ export class ConsentCategorySettings {
     violence: InformationCategorySetting = new InformationCategorySetting('VIO', 'Violence', 'Indicators of possible physical or mental harm by violence.');
 
     // SHARES information sharing purposes
-    treatment: InformationCategorySetting = new InformationCategorySetting('HIPAAConsentCD', 'Treatment', 'For the purposes of providing or supporing care.');
-    research: InformationCategorySetting = new InformationCategorySetting('RESEARCH', 'Research', 'Scientific and academic research intended to benefit others.');
+    treatment: InformationCategorySetting = new InformationCategorySetting(
+        InformationCategorySetting.ACT_CODE_TREATMENT_CODE,
+        InformationCategorySetting.ACT_CODE_TREATMENT_NAME,
+        InformationCategorySetting.ACT_CODE_TREATMENT_DISPLAY);
+    research: InformationCategorySetting = new InformationCategorySetting(
+        InformationCategorySetting.ACT_CODE_RESEARCH_CODE,
+        InformationCategorySetting.ACT_CODE_RESEARCH_NAME,
+        InformationCategorySetting.ACT_CODE_RESEARCH_DISPLAY);
 
+    
     categoryForCode(code: string): InformationCategorySetting | null {
         let cat = null;
         this.allCategories().forEach(c => {
@@ -57,7 +63,7 @@ export class ConsentCategorySettings {
             this.violence];
     }
 
-    allPurposes(): InformationPurposeSetting[] {
+    allPurposes(): InformationCategorySetting[] {
         return [
             this.treatment,
             this.research
@@ -119,7 +125,7 @@ export class ConsentCategorySettings {
         }
     }
 
-    updateConsentProvisionPurpose(provision: ConsentProvision, category: InformationPurposeSetting) {
+    updateConsentProvisionPurpose(provision: ConsentProvision, category: InformationCategorySetting) {
         if (category.enabled) {
             let found = false;
             provision?.purpose!.forEach(pur => {

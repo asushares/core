@@ -2,6 +2,7 @@
 
 import { Consent, ConsentProvision } from 'fhir/r5';
 import { v4 as uuidv4 } from 'uuid';
+import { InformationCategorySetting } from './information_category_setting';
 
 export class ConsentTemplate {
 
@@ -68,13 +69,18 @@ export class ConsentTemplate {
         ]
       }],
       // securityLabel: [],
-      // purpose: [
-      //   {
-      //     "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
-      //     "code": "RESEARCH",
-      //     "display": "RESEARCH"
-      //   }
-      // ]
+      purpose: [
+        {
+          "system": InformationCategorySetting.ACT_CODE_SYSTEM,
+          "code": InformationCategorySetting.ACT_CODE_RESEARCH_CODE,
+          "display": InformationCategorySetting.ACT_CODE_RESEARCH_DISPLAY
+        },
+        {
+          "system": InformationCategorySetting.ACT_CODE_SYSTEM,
+          "code": InformationCategorySetting.ACT_CODE_TREATMENT_CODE,
+          "display": InformationCategorySetting.ACT_CODE_TREATMENT_DISPLAY
+        }
+      ]
     }
     // let s = new ConsentCategorySettings();
     // s.updateConsentProvision(cp);
