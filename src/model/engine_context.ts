@@ -7,6 +7,7 @@ export class DataSharingEngineContext {
 
     public static HEADER_CDS_REDACTION_ENABLED = 'CDS-Redaction-Enabled';
     public static HEADER_CDS_CONFIDENCE_THRESHOLD = 'CDS-Confidence-Threshold';
+    public static HEADER_CREATE_AUDIT_EVENT_ENABLED = 'CDS-Create-Audit-Event';
 
     /**
      * identifiers of the actor
