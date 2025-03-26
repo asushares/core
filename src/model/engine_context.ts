@@ -1,6 +1,6 @@
 // Author: Preston Lee
 
-import { Bundle } from "fhir/r5";
+import { Bundle, Consent } from "fhir/r5";
 import { SystemValue, SystemCode } from "../cds/data_sharing_cds_hook_request";
 
 export class DataSharingEngineContext {
@@ -10,28 +10,33 @@ export class DataSharingEngineContext {
     public static HEADER_CDS_CONFIDENCE_THRESHOLD = 'CDS-Confidence-Threshold';
     public static HEADER_CDS_RULES_FILE = 'CDS-Rules-File';
 
-    /**
-     * identifiers of the actor
-     */
+    /** Identifiers of the actor */
     actor: SystemValue[] = [];
-    /**
-     * purpose of use
-     */
+
     purposeOfUse?: string[] | string = [];
+
     /**
-     * categories of applicable consents to the workflow context
+     * Categories of applicable consents to the workflow context
      */
     category?: SystemCode[] = [];
     /**
-     * identity of the patient whose consent is being considered
+     * Identity of the patient whose consent is being considered
      */
     patientId: SystemValue[] = [];
+
     /**
-     * content classes being requested
+     * Content classes being requested
      */
     class?: SystemCode[] = [];
+
     /**
-     * content being requested
+     * FHIR data to be evaluated.
      */
     content?: Bundle;
-} 
+
+    /**
+     * Optional Consent directives to use in leui of any that may be retrieved by, or known to, the engine.
+     */
+    consent?: Consent[] = [];
+
+}
