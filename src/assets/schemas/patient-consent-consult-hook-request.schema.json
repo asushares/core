@@ -116,6 +116,10 @@
             }
           },
           "required": ["entry", "resourceType"]
+        },
+        "consent": {
+          "description": "consent directive overrides to any consents retrieved by or known to the receiving system",
+          "type": "array"
         }
       },
       "required": ["patientId", "actor"]
