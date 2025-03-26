@@ -14,7 +14,10 @@ import { ConsentCategorySettings, ConsentDecision, InformationCategorySetting } 
 
 export abstract class AbstractDataSharingEngine {
 
-    constructor(public ruleProvider: AbstractSensitivityRuleProvider, public threshold: number, public redaction_enabled: boolean) {
+    constructor(public ruleProvider: AbstractSensitivityRuleProvider,
+        public threshold: number,
+        public redaction_enabled: boolean,
+        public create_audit_event: boolean) {
     }
 
 
@@ -72,7 +75,9 @@ export abstract class AbstractDataSharingEngine {
 
         // Create an AuditEvent with the results.
         let outcodeCode = { code: card.extension.decision, display: card.extension.decision };
-        this.createAuditEvent(consents, engineContext, outcodeCode);
+        if (this.create_audit_event) {
+            this.createAuditEvent(consents, engineContext, outcodeCode);
+        }
         return card;
     }
 
