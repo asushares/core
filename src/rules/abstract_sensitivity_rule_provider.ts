@@ -75,10 +75,10 @@ export abstract class AbstractSensitivityRuleProvider {
                 return found;
             })
         })
-        console.log('Applicable rules (' + rules.length + '): ');
-        rules.forEach(r => {
-            console.log("\tRule ID: " + r.id);
-        });
+        // console.log('Applicable rules (' + rules.length + '): ');
+        // rules.forEach(r => {
+        //     console.log("\tRule ID: " + r.id);
+        // });
         return rules;
     }
 
