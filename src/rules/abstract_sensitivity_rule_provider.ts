@@ -44,7 +44,7 @@ export abstract class AbstractSensitivityRuleProvider {
     validateRuleFile(data: string) {
         const ajv = new Ajv();
         if (!this.validator) {
-            console.log('No validator found. All validations will pass without errors.');            
+            console.log('No validator found. All validations will pass without errors.');
             return null;
         }
         else if (this.validator(data)) {
@@ -63,12 +63,12 @@ export abstract class AbstractSensitivityRuleProvider {
                     if (coding.system == codings[i].system && coding.code == codings[i].code) {
                         if (coding.confidence >= threshold) {
                             found = true;
-                            console.debug("Rule sensitivity match on: " + coding.system + ' ' + coding.code);
+                            // console.debug("Rule sensitivity match on: " + coding.system + ' ' + coding.code);
                             break;
                         } else {
-                            console.debug(`Rule sensitivity match SKIPPED due to low confidence ` +
-                                `(confidence ${coding.confidence} < configured threshold ${threshold}) for: ` +
-                                coding.system + ' ' + coding.code);
+                            // console.debug(`Rule sensitivity match SKIPPED due to low confidence ` +
+                            //     `(confidence ${coding.confidence} < configured threshold ${threshold}) for: ` +
+                            //     coding.system + ' ' + coding.code);
                         }
                     }
                 }
