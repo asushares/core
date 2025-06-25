@@ -63,10 +63,10 @@ export abstract class AbstractSensitivityRuleProvider {
                     if (coding.system == codings[i].system && coding.code == codings[i].code) {
                         if (coding.confidence >= threshold) {
                             found = true;
-                            console.log("Rule sensitivity match on: " + coding.system + ' ' + coding.code);
+                            console.debug("Rule sensitivity match on: " + coding.system + ' ' + coding.code);
                             break;
                         } else {
-                            console.log(`Rule sensitivity match SKIPPED due to low confidence ` +
+                            console.debug(`Rule sensitivity match SKIPPED due to low confidence ` +
                                 `(confidence ${coding.confidence} < configured threshold ${threshold}) for: ` +
                                 coding.system + ' ' + coding.code);
                         }
