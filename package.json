@@ -1,16 +1,23 @@
 {
   "name": "@asushares/core",
-  "version": "2.12.6",
+  "version": "3.0.1",
   "description": "ASU SHARES common class and CLI utility library.",
+  "type": "module",
   "main": "./build/src/index.js",
   "types": "./build/src/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./build/src/index.js",
+      "types": "./build/src/index.d.ts"
+    }
+  },
   "scripts": {
     "clean": "rm -rf ./build",
     "compile": "npx tsc",
     "copy-files": "mkdir -p build/assets && cp -R src/assets/ build/src/assets/",
     "build": "npm run clean && npm run compile && npm run copy-files",
     "package": "npm run build && npm pack",
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test-watch": "nodemon --watch '{src,test}/**' --ext 'ts,md,json' --exec 'npx jest'"
   },
   "repository": {

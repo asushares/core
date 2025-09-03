@@ -1,6 +1,6 @@
 // Author: Preston Lee
 
-import Ajv from 'ajv';
+import { Ajv } from 'ajv';
 
 export abstract class AbstractDataSharingCDSHookValidator {
 

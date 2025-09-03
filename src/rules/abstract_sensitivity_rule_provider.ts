@@ -1,12 +1,9 @@
 // Author: Preston Lee
 
-
-import Ajv from 'ajv';
-
-import { Coding } from "fhir/r5";
-
-import { Rule } from '../model/rule';
-import { RulesFile } from '../model/rules_file';
+import { Ajv } from 'ajv';
+import { Coding } from 'fhir/r5.js';
+import { Rule } from '../model/rule.js';
+import { RulesFile } from '../model/rules_file.js';
 
 export abstract class AbstractSensitivityRuleProvider {
 

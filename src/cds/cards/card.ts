@@ -1,7 +1,7 @@
 // Author: Preston Lee
 
-import { ConsentExtension } from "../../model/consent_extension";
-import { ConsentDecision } from "../../model/consent_decision";
+import { ConsentExtension } from "../../model/consent_extension.js";
+import { ConsentDecision } from "../../model/consent_decision.js";
 
 export abstract class Card {
     // abstract summary: 'CONSENT_PERMIT' | 'CONSENT_DENY' | 'NO_CONSENT';// = 'NO_CONSENT';

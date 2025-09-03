@@ -1,7 +1,7 @@
 // Author: Preston Lee
 
-import { Bundle, Consent } from "fhir/r5";
-import { SystemValue, SystemCode } from "../cds/data_sharing_cds_hook_request";
+import { Bundle, Consent } from "fhir/r5.js";
+import { SystemValue, SystemCode } from "../cds/data_sharing_cds_hook_request.js";
 
 export class DataSharingEngineContext {
 

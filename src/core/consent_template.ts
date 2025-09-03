@@ -1,8 +1,8 @@
 // Author: Preston Lee
 
-import { Consent, ConsentProvision } from 'fhir/r5';
+import { Consent, ConsentProvision } from 'fhir/r5.js';
 import { v4 as uuidv4 } from 'uuid';
-import { InformationCategorySetting } from './information_category_setting';
+import { InformationCategorySetting } from './information_category_setting.js';
 
 export class ConsentTemplate {
 

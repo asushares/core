@@ -1,16 +1,15 @@
 // Author: Preston Lee
 
 import { JSONPath } from "jsonpath-plus";
-
-import { Coding, Consent, ConsentProvision, FhirResource } from "fhir/r5";
-import { ConsentExtension } from "../model/consent_extension";
-import { AbstractSensitivityRuleProvider } from "../rules/abstract_sensitivity_rule_provider";
-import { DataSharingEngineContext } from "../model/engine_context";
-import { Card } from "../cds/cards/card";
-import { DenyCard } from "../cds/cards/deny_card";
-import { NoConsentCard } from "../cds/cards/no_consent_card";
-import { PermitCard } from "../cds/cards/permit_card";
-import { ConsentCategorySettings, ConsentDecision, InformationCategorySetting } from "..";
+import { Coding, Consent, ConsentProvision, FhirResource } from "fhir/r5.js";
+import { ConsentExtension } from "../model/consent_extension.js";
+import { AbstractSensitivityRuleProvider } from "../rules/abstract_sensitivity_rule_provider.js";
+import { DataSharingEngineContext } from "../model/engine_context.js";
+import { Card } from "../cds/cards/card.js";
+import { DenyCard } from "../cds/cards/deny_card.js";
+import { NoConsentCard } from "../cds/cards/no_consent_card.js";
+import { PermitCard } from "../cds/cards/permit_card.js";
+import { ConsentCategorySettings, ConsentDecision, InformationCategorySetting } from "../index.js";
 
 export abstract class AbstractDataSharingEngine {
 
@@ -88,7 +87,7 @@ export abstract class AbstractDataSharingEngine {
             // Find all Coding elements anywhere within the tree. It doesn't matter where.
             // consentExtension = new ConsentExtension(engineContext.content);
             if (consentExtension.content?.entry) {
-                consentExtension.content.entry.forEach(e => {
+                consentExtension.content.entry.forEach((e: any) => {
                     if (e.resource) {
                         // TODO This is a pretty naiive implementation, as it only looks for coded elements recursively without awareness of the context.
                         let codings = JSONPath({ path: "$..coding", json: e.resource }).flat();
@@ -169,7 +168,7 @@ export abstract class AbstractDataSharingEngine {
 
     redactFromLabels(consentExtension: ConsentExtension) {
         if (consentExtension.content?.entry) {
-            consentExtension.content.entry = consentExtension.content?.entry.filter(e => {
+            consentExtension.content.entry = consentExtension.content?.entry.filter((e: any) => {
                 if (e.resource) {
                     return !this.shouldRedactFromLabels(consentExtension, e!.resource);
                 }

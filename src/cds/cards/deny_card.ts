@@ -1,7 +1,7 @@
 // Author: Preston Lee
 
-import { Card } from "./card"
-import { ConsentDecision } from "../../model/consent_decision";
+import { Card } from "./card.js"
+import { ConsentDecision } from "../../model/consent_decision.js";
 
 export class DenyCard extends Card {
     summary: ConsentDecision = ConsentDecision.CONSENT_DENY;

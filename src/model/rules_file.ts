@@ -1,6 +1,6 @@
 // Author: Preston Lee
 
-import { Rule } from "./rule";
+import { Rule } from "./rule.js";
 
 export class RulesFile {
 

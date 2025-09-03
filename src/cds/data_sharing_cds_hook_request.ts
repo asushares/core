@@ -1,8 +1,7 @@
 // Author: Preston Lee
 
-import { Bundle } from 'fhir/r5';
 import { v4 as uuidv4 } from 'uuid';
-import { DataSharingEngineContext } from '../model/engine_context';
+import { DataSharingEngineContext } from '../model/engine_context.js';
 
 
 export class DataSharingCDSHookRequest {

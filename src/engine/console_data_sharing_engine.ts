@@ -1,8 +1,8 @@
 // Author: Preston Lee
 
-import { Consent, Coding } from "fhir/r5";
-import { AbstractDataSharingEngine } from "./abstract_data_sharing_engine";
-import { DataSharingEngineContext } from "../model/engine_context";
+import { Consent, Coding } from "fhir/r5.js";
+import { AbstractDataSharingEngine } from "./abstract_data_sharing_engine.js";
+import { DataSharingEngineContext } from "../model/engine_context.js";
 
 export class ConsoleDataSharingEngine extends AbstractDataSharingEngine {
 

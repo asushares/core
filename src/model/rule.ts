@@ -1,8 +1,8 @@
 // Author: Preston Lee
 
 import * as uuid from 'uuid';
-import { CodeSet } from './code_set';
-import { Coding } from './coding';
+import { CodeSet } from './code_set.js';
+import { Coding } from './coding.js';
 
 export class Rule {
 

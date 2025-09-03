@@ -1,7 +1,7 @@
 // Author: Preston Lee
 
-import { Coding, ConsentProvision } from "fhir/r5";
-import { InformationCategorySetting } from "./information_category_setting";
+import { Coding, ConsentProvision } from "fhir/r5.js";
+import { InformationCategorySetting } from "./information_category_setting.js";
 
 export class ConsentCategorySettings {
 

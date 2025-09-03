@@ -1,7 +1,7 @@
 // Author: Preston Lee
 
-import { RulesFile } from "../model/rules_file";
-import { AbstractSensitivityRuleProvider } from "./abstract_sensitivity_rule_provider";
+import { RulesFile } from "../model/rules_file.js";
+import { AbstractSensitivityRuleProvider } from "./abstract_sensitivity_rule_provider.js";
 
 
 export class DummyRuleProvider extends AbstractSensitivityRuleProvider {

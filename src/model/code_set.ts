@@ -1,6 +1,6 @@
 // Author: Preston Lee
 
-import { CodeSetCoding } from './code_set_coding';
+import { CodeSetCoding } from './code_set_coding.js';
 
 export class CodeSet {
 

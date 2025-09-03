@@ -1,7 +1,7 @@
 // Author: Preston Lee
 
-import { Bundle, FhirResource } from "fhir/r5"
-import { ConsentDecision } from "./consent_decision";
+import { Bundle, FhirResource } from "fhir/r5.js";
+import { ConsentDecision } from "./consent_decision.js";
 
 export class ConsentExtension {
 

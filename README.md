@@ -1,13 +1,7 @@
 # ASU SHARES Core Common Libraries and Utilities
 
-The NPM package provides common shared libraries and utilities functions for writting applications integrated with the [ASU SHARES](https://www.asushares.com) stack.
+The NPM package provides common shared libraries and utilities functions for writting applications integrated with the [ASU SHARES](https://www.asushares.com) stack. It can be used in both backend applications such as Node and Express, as well as frondend applications such as Angular and React.
 
-## CLI Usage
-
-`npm i -g @asushares/core` to install globally your existing NodeJS environment.
-
-`asushares version` for CLI utility version information
-`asushares --help` for subcommand documentation and examples
 
 ## Project Integration
 
