@@ -1,6 +1,6 @@
 {
   "name": "@asushares/core",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "ASU SHARES common class and CLI utility library.",
   "type": "module",
   "main": "./build/src/index.js",
@@ -8,8 +8,10 @@
   "exports": {
     ".": {
       "import": "./build/src/index.js",
-      "types": "./build/src/index.d.ts"
-    }
+      "types": "./build/src/index.d.ts",
+      "default": "./build/src/index.js"
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
     "clean": "rm -rf ./build",
