@@ -120,7 +120,7 @@ export abstract class AbstractDataSharingEngine {
     }
 
     // redactFromLabels(card: Card) {
-    shouldRedactFromLabels(consentExtension: ConsentExtension, resource: FhirResource) {
+    shouldRedactFromLabels(consentExtension: ConsentExtension, resource: FhirResource): boolean {
         let shouldRedact = false;
         if (resource?.meta?.security) {
             consentExtension.obligations.forEach(o => {
@@ -137,6 +137,8 @@ export abstract class AbstractDataSharingEngine {
             });
             return !shouldRedact;
         }
+        // Will default to false if there are no labels.
+        return shouldRedact;
     }
 
     sharableForPurpose(p: ConsentProvision, c: InformationCategorySetting): boolean {
@@ -269,17 +271,24 @@ export abstract class AbstractDataSharingEngine {
             consent.provision.forEach((p) => {
                 tmpCategorySettings.loadAllFromConsentProvision(p);
                 labeledResources.forEach((r) => {
-                    let extension = new ConsentExtension(null);
-                    let includeEnabled = consent?.decision == 'permit';
-                    extension.obligations.push({
-                        id: { system: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.system, code: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.code },
-                        parameters: {
-                            codes: tmpCategorySettings.allCategories()
-                                .filter(c => includeEnabled ? !c.enabled : c.enabled) // Only categories relevant to the consent
-                                .map(c => { return { system: c.system, code: c.act_code } }) // Make it a valid Coding
-                        }
-                    })
-                    shouldShare = !this.shouldRedactFromLabels(extension, r) && this.shouldShareFromPurposes(r, p, sharingContextSettings);
+                    // Check if resource has labels (meta.security)
+                    if (r.meta?.security && r.meta.security.length > 0) {
+                        // Labeled resource: apply full purpose-based logic
+                        let extension = new ConsentExtension(null);
+                        let includeEnabled = consent?.decision == 'permit';
+                        extension.obligations.push({
+                            id: { system: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.system, code: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.code },
+                            parameters: {
+                                codes: tmpCategorySettings.allCategories()
+                                    .filter(c => includeEnabled ? !c.enabled : c.enabled) // Only categories relevant to the consent
+                                    .map(c => { return { system: c.system, code: c.act_code } }) // Make it a valid Coding
+                            }
+                        })
+                        shouldShare = !this.shouldRedactFromLabels(extension, r) && this.shouldShareFromPurposes(r, p, sharingContextSettings);
+                    } else {
+                        // Unlabeled resource: follow consent's base decision directly
+                        shouldShare = consent?.decision === 'permit';
+                    }
                     // console.log('Decision:', r.resourceType, r.id, shouldShare);
                     if (shouldShare) {
                         consentDecisions[r.id!] = new PermitCard();
