@@ -286,8 +286,8 @@ export abstract class AbstractDataSharingEngine {
                         })
                         shouldShare = !this.shouldRedactFromLabels(extension, r) && this.shouldShareFromPurposes(r, p, sharingContextSettings);
                     } else {
-                        // Unlabeled resource: follow consent's base decision directly
-                        shouldShare = consent?.decision === 'permit';
+                        // Unlabeled resource: follow consent's base decision AND consider purpose of use
+                        shouldShare = consent?.decision === 'permit' && this.shouldShareFromPurposes(r, p, sharingContextSettings);
                     }
                     // console.log('Decision:', r.resourceType, r.id, shouldShare);
                     if (shouldShare) {
